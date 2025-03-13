@@ -52,24 +52,4 @@ __device__ inline void atomicWrite(T* const addr, const T val)
   ((cuda::atomic<T>*)addr)->store(val, cuda::memory_order_relaxed);
 }
 
-void CheckCuda()
-{
-  cudaError_t e;
-  cudaDeviceSynchronize();
-  if (cudaSuccess != (e = cudaGetLastError())) {
-    fprintf(stderr, "CUDA error %d: %s\n", e, cudaGetErrorString(e));
-    exit(-1);
-  }
-}
-
-void CheckCuda(const int line)
-{
-  cudaError_t e;
-  cudaDeviceSynchronize();
-  if (cudaSuccess != (e = cudaGetLastError())) {
-    fprintf(stderr, "CUDA error %d on line %d: %s\n", e, line, cudaGetErrorString(e));
-    exit(-1);
-  }
-}
-
 #endif

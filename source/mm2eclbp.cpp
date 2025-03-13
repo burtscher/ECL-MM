@@ -65,7 +65,6 @@ int main(int argc, char* argv[])
   if ((strstr(line, "general") == 0) && (strstr(line, "symmetric") == 0)) {fprintf(stderr, "ERROR: first line does not contain \"general\" or \"symmetric\"\n\n");  exit(-1);}
   if ((strstr(line, "real") == 0) && (strstr(line, "integer") == 0) && (strstr(line, "pattern") == 0)) {fprintf(stderr, "ERROR: first line does not contain \"integer\" or \"pattern\"\n\n");  exit(-1);}
   bool hasweights = false;
-  //if (strstr(line, "integer") != 0) hasweights = true;
   if (strstr(line, "wt") != 0) hasweights = true;
   bool symmetric = false;
   if (strstr(line, "symmetric") != 0) symmetric = true;
@@ -147,7 +146,6 @@ int main(int argc, char* argv[])
     if ((g.nindex == NULL) || (g.nlist == NULL)) {fprintf(stderr, "ERROR: memory allocation failed\n\n");  exit(-1);}
 
     std::sort(v.begin(), v.end());
-    //std::sort(v.begin(), v.end(), [v](std::pair<int, int> p1, std::pair<int, int> p2) {return ((p1.first < p2.first) || ((p1.first == p2.first) && std::find(v.begin(), v.end(), p1) < std::find(v.begin(), v.end(), p2)));});
 
     g.nindex[0] = 0;
     for (int i = 0; i < g.edges; i++) {

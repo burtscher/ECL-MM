@@ -572,6 +572,17 @@ static void printDegreeDetails(ECLgraph& g)
 }
 
 
+void CheckCuda(const int line)
+{
+  cudaError_t e;
+  cudaDeviceSynchronize();
+  if (cudaSuccess != (e = cudaGetLastError())) {
+    fprintf(stderr, "CUDA error %d on line %d: %s\n", e, line, cudaGetErrorString(e));
+    exit(-1);
+  }
+}
+
+
 int main(int argc, char* argv[])
 {
   printf("ECL-MM v1.0\n\n");  fflush(stdout);
