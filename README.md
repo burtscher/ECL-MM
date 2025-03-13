@@ -6,7 +6,7 @@ The inputs used in the paper are:
 
     ['amazon0312', 'r4-2e23', 'uk-2002', 'as-Skitter', 'hugebubbles-00000', 'rgg_n_2_24_s0', 'uk-2005', 'cit-Patents', 'hugetrace-00020', 'rmat22', 'wb-edu', 'coPapersDBLP', 'in-2004', 'roadNet-CA', 'web-Google', 'delaunay_n24', 'kkt_power', 'road_usa', 'wikipedia-20070206', 'europe_osm', 'kron_g500-logn21', 'soc-LiveJournal1']
 
-To download an input, for example, amazon0312, search the name of the input in the [website](https://sparse.tamu.edu), righ-click on the 'Matrix Market' download button, copy the [link](https://suitesparse-collection-website.herokuapp.com/MM/SNAP/amazon0312.tar.gz), and then from the terminal, enter:
+To download an input, for example, amazon0312, search the name of the input in the [website](https://sparse.tamu.edu), righ-click on the 'Matrix Market' download button, copy the link, and then from the terminal, enter *wget* followed by the link:
     
     wget https://suitesparse-collection-website.herokuapp.com/MM/SNAP/amazon0312.tar.gz
 
