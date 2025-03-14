@@ -10,6 +10,14 @@ To download an input, for example, amazon0312, search the name of the input in t
     
     wget https://suitesparse-collection-website.herokuapp.com/MM/SNAP/amazon0312.tar.gz
 
+To decompress and extract the input from the .tar.gz file, run the following command from terminal:
+
+    tar -xzf amazon0312.tar.gz
+
+Note: If the downloaded file has a .tar extension instead of .tar.gz, it means that the decompression is already done. In that case, run the following command instead of the previous one:
+
+    tar -xf amazon0312.tar
+
 The converter can be compiled as follows:
 
     g++ -std=c++11 -O3 mm2eclbp.cpp -o mm2eclbp
