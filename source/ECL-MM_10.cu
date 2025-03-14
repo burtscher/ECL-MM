@@ -420,6 +420,16 @@ static int findSizeOfMatching()
 }
 
 
+static void printEdgesInMatching()
+{
+  printf("\nEdges in the maximum matching:\n");
+  for (int a = 0; a < sizeOfA; a++) {
+    if (mate[a] != -1)
+      printf("%d %d\n", a, mate[a]);
+  }
+}
+
+
 static void freeMemory()
 {
   delete[] mate;
@@ -670,6 +680,7 @@ int main(int argc, char* argv[])
   printf("numEdgesDivByTotalRunTime = %lf\n", (double)numEdges / (initTime + apAndAugTime));
   printf("numEdgesDivByAPSearchPhaseTime = %lf\n", (double)numEdges / (apAndAugTime));
   printf("-----------------------------\n");
+  //printEdgesInMatching();
   freeECLgraph(g);
   freeMemory();
 }
