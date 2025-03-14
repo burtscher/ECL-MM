@@ -22,9 +22,9 @@ The converter can be compiled as follows:
 
     g++ -std=c++11 -O3 mm2eclbp.cpp -o mm2eclbp
 
-To convert the file graph.mm into the file graph.egr, enter:
+To convert the file graph.mtx into the file graph.egr, enter:
 
-    ./mm2eclbp graph.mm graph.egr
+    ./mm2eclbp graph.mtx graph.egr
 
 
 The ECL-MM CUDA code consists of the source files ECL-MM_10.cu, ECLgraph.h, and ECLatomic.h. See the paper listed below for a description of ECL-MM. Note that ECL-MM is protected by the 3-Clause BSD license.
