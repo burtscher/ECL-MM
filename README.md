@@ -37,6 +37,7 @@ To compute the MM of the file graph.egr, enter:
 
     ./ecl-mm graph.egr
 
+Note: If you wish to print the edges in the maximum matching computed, uncomment the call to the function printEdgesInMatching() in ECL-MM_10.cu, recompile and run the code.
 
 ### Publication
 
