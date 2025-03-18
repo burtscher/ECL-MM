@@ -81,8 +81,8 @@ static void printGraphSpec(char* fileName)
   std::istringstream iss2(s);
   std::string token;
   while (getline(iss2, token, '/'));
-  printf("input = %s\n", token.c_str());
-  printf("|A| = %d\n|B| = %d\n|E| = %d\n", sizeOfA, sizeOfB, numEdges);
+  printf("input: %s\n", token.c_str());
+  printf("|A|: %d\n|B|: %d\n|E|: %d\n", sizeOfA, sizeOfB, numEdges);
 }
 
 
@@ -595,13 +595,13 @@ void CheckCuda(const int line)
 
 int main(int argc, char* argv[])
 {
-  printf("ECL-MM v1.0\n\n");  fflush(stdout);
+  printf("ECL-MM v1.0\n"); 
+  printf("Copyright (c) 2025, Anju Mongandampulath Akathoott and Martin Burtscher\n\n"); fflush(stdout);
 
   if (argc < 2) {
     fprintf(stderr, "USAGE: %s <inputFileName(s)>\nExiting...\n", argv[0]);
     exit(-1);
   }
-  printf("threadsPerBlock = %d\n", TPB);
   // Processing one input
   ECLgraph g = readECLgraph(argv[1]);
 
@@ -636,9 +636,9 @@ int main(int argc, char* argv[])
   d_init();
   double initTime = t1.elapsed();
   cudaMemcpy(mate, d_mate, n* sizeof(int), cudaMemcpyDeviceToHost);
-  printf("initRuntime = %f s\n", initTime);
+  printf("initRuntime: %f s\n", initTime);
   int m = findSizeOfMatching();
-  printf("sizeof_initialMatching = %d edges\n\n", m);
+  printf("sizeof_initialMatching: %d edges\n\n", m);
 
   // AP Search Phase:
   apSearch_itrCount = 0;
@@ -654,9 +654,9 @@ int main(int argc, char* argv[])
       augment();
     } else {
       apAndAugTime = ts.elapsed();
-      printf("apSearchTime = %f s\n", apAndAugTime);
-      printf("totalRunTime = %f s\n", initTime + apAndAugTime );
-      printf("apSearch_iterations = %d\n", apSearch_itrCount);
+      printf("apSearchTime: %f s\n", apAndAugTime);
+      printf("totalRunTime: %f s\n", initTime + apAndAugTime );
+      printf("apSearch_iterations: %d\n", apSearch_itrCount);
     }
   } while (apFound);
 
@@ -665,10 +665,10 @@ int main(int argc, char* argv[])
   cudaMemcpy(&totalNumPaths, d_totalNumPaths, sizeof(int), cudaMemcpyDeviceToHost);
   cudaMemcpy(&totalPathLengths, d_totalPathLengths, sizeof(int), cudaMemcpyDeviceToHost);
 
-  printf("sizeof_finalMatching = %d edges\n", finalM);
-  printf("avgAPLength = %f edges\n", (float)totalPathLengths / totalNumPaths);
-  printf("overall_throughput = %lf edges/s\n", (double)numEdges / (initTime + apAndAugTime));
-  printf("apSearchPhase_throughput = %lf edges/s\n", (double)numEdges / (apAndAugTime));
+  printf("sizeof_finalMatching: %d edges\n", finalM);
+  printf("avgAPLength: %.2f edges\n", (float)totalPathLengths / totalNumPaths);
+  printf("overall_throughput: %.3f edges/s\n", (double)numEdges / (initTime + apAndAugTime));
+  printf("apSearchPhase_throughput: %.3f edges/s\n", (double)numEdges / (apAndAugTime));
   //printEdgesInMatching();
   freeECLgraph(g);
   freeMemory();
