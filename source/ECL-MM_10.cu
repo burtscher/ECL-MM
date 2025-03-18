@@ -529,7 +529,7 @@ static void d_init()
     init_processBNodes<<<(sizeOfB + TPB - 1) / TPB, TPB>>>(itr, sizeOfB, startIndexOfB, d_itrFlag, d_mate);
     cudaMemcpy(&repeat, d_repeat, sizeof(bool), cudaMemcpyDeviceToHost);
   } while (repeat);
-  printf("init_iterations = %d\n", itr);
+  printf("init_iterations: %d\n", itr);
   cudaFree(d_repeat);
 }
 
@@ -577,7 +577,7 @@ static void printDegreeDetails(ECLgraph& g)
   int maxDeg = *(std::max_element(degree, (degree + g.nodes)));
   assert(sum >= 0 && sum < INT_MAX);
   float avgDeg = (float)sum / g.nodes;
-  printf("minDeg = %d\nmaxDeg = %d\navgDeg = %.2f\n", minDeg, maxDeg, avgDeg);
+  printf("minDeg: %d\nmaxDeg: %d\navgDeg: %.2f\n", minDeg, maxDeg, avgDeg);
   delete[] degree;
 }
 
