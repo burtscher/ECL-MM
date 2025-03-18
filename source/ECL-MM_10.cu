@@ -74,14 +74,7 @@ struct CPUTimer
 
 static void printGraphSpec(char* fileName)
 {
-  std::string shortName(fileName);
-  std::istringstream iss(shortName);
-  std::string s;
-  getline(iss, s, '.');
-  std::istringstream iss2(s);
-  std::string token;
-  while (getline(iss2, token, '/'));
-  printf("input: %s\n", token.c_str());
+  printf("input: %s\n", fileName);
   printf("|A|: %d\n|B|: %d\n|E|: %d\n", sizeOfA, sizeOfB, numEdges);
 }
 
