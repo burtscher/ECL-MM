@@ -81,7 +81,7 @@ static void printGraphSpec(char* fileName)
   std::istringstream iss2(s);
   std::string token;
   while (getline(iss2, token, '/'));
-  printf("input=%s\n", token.c_str());
+  printf("input = %s\n", token.c_str());
   printf("|A| = %d\n|B| = %d\n|E| = %d\n", sizeOfA, sizeOfB, numEdges);
 }
 
@@ -419,7 +419,7 @@ static int findSizeOfMatching()
   return numMatchedEdges;
 }
 
-
+/*
 static void printEdgesInMatching()
 {
   printf("\nEdges in the maximum matching:\n");
@@ -428,7 +428,7 @@ static void printEdgesInMatching()
       printf("%d %d\n", a, mate[a]);
   }
 }
-
+*/
 
 static void freeMemory()
 {
@@ -529,7 +529,7 @@ static void d_init()
     init_processBNodes<<<(sizeOfB + TPB - 1) / TPB, TPB>>>(itr, sizeOfB, startIndexOfB, d_itrFlag, d_mate);
     cudaMemcpy(&repeat, d_repeat, sizeof(bool), cudaMemcpyDeviceToHost);
   } while (repeat);
-  printf("initIterations = %d\n", itr);
+  printf("init_iterations = %d\n", itr);
   cudaFree(d_repeat);
 }
 
@@ -603,14 +603,8 @@ int main(int argc, char* argv[])
   }
   printf("threadsPerBlock = %d\n", TPB);
   // Processing one input
-  CPUTimer readTimer;
-  readTimer.start();
   ECLgraph g = readECLgraph(argv[1]);
-  double rt = readTimer.elapsed();
-  printf("GraphReadTime = %.2f s\n", rt);
 
-  printf("threshold for enabling warp-centric processing= %d\n", threshold);
-  
   n = g.nodes;
   sizeOfA = n / 2;
   sizeOfB = sizeOfA;
@@ -626,12 +620,12 @@ int main(int argc, char* argv[])
   cudaSetDevice(Device);
   cudaDeviceProp deviceProp;
   cudaGetDeviceProperties(&deviceProp, Device);
-  if ((deviceProp.major == 9999) && (deviceProp.minor == 9999)) {fprintf(stderr, "ERROR: no CUDA capable device detected\n\n"); exit(-1);}
+
+  if ((deviceProp.major == 9999) && (deviceProp.minor == 9999)) {fprintf(stderr, "ERROR: no CUDA capable device detected\n\n"); return -1;}
   const int SMs = deviceProp.multiProcessorCount;
   const int mTpSM = deviceProp.maxThreadsPerMultiProcessor;
-  printf("GPU: %s with %d SMs and %d mTpSM (%.1f MHz and %.1f MHz)\n", deviceProp.name, SMs, mTpSM, deviceProp.clockRate * 0.001, deviceProp.memoryClockRate * 0.001);
-  const float bw = 2.0 * deviceProp.memoryClockRate * (deviceProp.memoryBusWidth / 8) * 0.000001;
-  printf("     %.1f GB/s (%.1f+%.1f) peak bandwidth (%d-bit bus)\n\n", bw, bw / 2, bw / 2, deviceProp.memoryBusWidth);
+  printf("\nGPU: %s with %d SMs and %d mTpSM (%.1f MHz and %.1f MHz)\n", deviceProp.name, SMs, mTpSM, deviceProp.clockRate * 0.001, deviceProp.memoryClockRate * 0.001);
+  printf("     %.1f GB/s peak bandwidth (%d-bit bus), compute capability %d.%d\n\n", 2.0 * deviceProp.memoryClockRate * (deviceProp.memoryBusWidth / 8) * 0.000001, deviceProp.memoryBusWidth, deviceProp.major, deviceProp.minor);
   CheckCuda(__LINE__);
 
   allocateAndInitDS(g);
@@ -642,10 +636,9 @@ int main(int argc, char* argv[])
   d_init();
   double initTime = t1.elapsed();
   cudaMemcpy(mate, d_mate, n* sizeof(int), cudaMemcpyDeviceToHost);
-  printf("initRuntime = %f\n", initTime);
+  printf("initRuntime = %f s\n", initTime);
   int m = findSizeOfMatching();
-  printf("initialM = %d\n", m);
-  printf("initialM_AsPercent = %.2f%%\n", 100.0 * m / sizeOfA);
+  printf("sizeof_initialMatching = %d edges\n\n", m);
 
   // AP Search Phase:
   apSearch_itrCount = 0;
@@ -661,9 +654,9 @@ int main(int argc, char* argv[])
       augment();
     } else {
       apAndAugTime = ts.elapsed();
-      printf("apSearchTime = %f\n", apAndAugTime);
-      printf("totalRunTime = %f\n", initTime + apAndAugTime );
-      printf("apSearchItr = %d\n", apSearch_itrCount);
+      printf("apSearchTime = %f s\n", apAndAugTime);
+      printf("totalRunTime = %f s\n", initTime + apAndAugTime );
+      printf("apSearch_iterations = %d\n", apSearch_itrCount);
     }
   } while (apFound);
 
@@ -672,14 +665,10 @@ int main(int argc, char* argv[])
   cudaMemcpy(&totalNumPaths, d_totalNumPaths, sizeof(int), cudaMemcpyDeviceToHost);
   cudaMemcpy(&totalPathLengths, d_totalPathLengths, sizeof(int), cudaMemcpyDeviceToHost);
 
-  printf("finalM = %d\n", finalM);
-  printf("finalM_AsPercent = %.2f%%\n", 100.0 * finalM / sizeOfA);
-  printf("avgAPLen = %f\n", (float)totalPathLengths / totalNumPaths);
-  printf("numNodesDivByTotalRunTime = %lf\n", (double)n / (initTime + apAndAugTime));
-  printf("numNodesDivByAPSearchPhaseTime = %lf\n", (double)n / (apAndAugTime));
-  printf("numEdgesDivByTotalRunTime = %lf\n", (double)numEdges / (initTime + apAndAugTime));
-  printf("numEdgesDivByAPSearchPhaseTime = %lf\n", (double)numEdges / (apAndAugTime));
-  printf("-----------------------------\n");
+  printf("sizeof_finalMatching = %d edges\n", finalM);
+  printf("avgAPLength = %f edges\n", (float)totalPathLengths / totalNumPaths);
+  printf("overall_throughput = %lf edges/s\n", (double)numEdges / (initTime + apAndAugTime));
+  printf("apSearchPhase_throughput = %lf edges/s\n", (double)numEdges / (apAndAugTime));
   //printEdgesInMatching();
   freeECLgraph(g);
   freeMemory();

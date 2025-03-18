@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
     printf("yes\t#weights, but ignoring for bipartite graph\n");
     int cnt = 0, src, dst, wei, extraEdges = 0; // Read and ignore wei
     std::vector<std::pair<int, int>> v;
-    while (fscanf(fin, "%d %d %f", &src, &dst, &wei) == 3) {
+    while (fscanf(fin, "%d %d %d", &src, &dst, &wei) == 3) {
       cnt++;
       if ((src < 1) || (src > nodes)) {fprintf(stderr, "ERROR: source out of range\n\n");  exit(-1);}
       if ((dst < 1) || (dst > nodes)) {fprintf(stderr, "ERROR: source out of range\n\n");  exit(-1);}
